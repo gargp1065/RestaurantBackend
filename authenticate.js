@@ -5,7 +5,8 @@ var JwtStrategy = require('passport-jwt').Strategy
 var jwt = require('jsonwebtoken') 
 var ExtractJwt = require('passport-jwt').ExtractJwt;
 
-var config = require('./config')
+var config = require('./config');
+const e = require('express');
 exports.local = passport.use(new LocalStragety(User.authenticate()));
 passport.serializeUser(User.serializeUser());   //
 passport.deserializeUser(User.deserializeUser());
@@ -38,7 +39,17 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
     }
 
 ))
-exports.verifyUser = passport.authenticate('jwt', {session: false})
+exports.verifyUser = passport.authenticate('jwt', {session: false});
+exports.verifyAdmin = function(req, res, next) {
+    if(req.user.admin) {
+       return next();
+    }
+    else {
+        res.statusCode = 404;
+        res.json("Not Authorized");
+        return ;
+    }
+}
 
 ///User.serilaizeusr provided by the p-l-m module.
 //Helps t0 store the data required for the session storage.

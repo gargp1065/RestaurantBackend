@@ -6,12 +6,15 @@ var router = express.Router();
 var authenticate = require('../authenticate');
 router.use(bodyParser.json());
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
 
 
-router.get('/user', (req,res, next) => {
+// router.get('/', function(req, res, next) {
+//   res.send('respond with a resource');
+// });
+
+
+router.route('/')
+.get(authenticate.verifyUser, authenticate.verifyAdmin, (req,res, next) => {
   User.find({})
   .then((users) => {
     res.statusCode = 200;
@@ -19,9 +22,9 @@ router.get('/user', (req,res, next) => {
     res.json(users);
   })
   .catch((err) => console.log(err))
-});
+})
 
-router.delete('/user', (req, res, next) => {
+.delete(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
   User.remove({})
   .then((resp) => {
     res.setHeader('Content-Type', 'application/json')
@@ -30,7 +33,7 @@ router.delete('/user', (req, res, next) => {
 
   })
   .catch((err) => console.log(err));
-})
+});
 
 router.post('/signup', (req, res, next) => {
   User.register( new User({username: req.body.username}), req.body.password, (err, user) => {
