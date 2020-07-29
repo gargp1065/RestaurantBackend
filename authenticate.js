@@ -82,7 +82,7 @@ exports.facebookPassport = passport.use(new
             }
         })
     }
-))
+));
 
 ///User.serilaizeusr provided by the p-l-m module.
 //Helps t0 store the data required for the session storage.
